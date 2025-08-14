@@ -1,3 +1,4 @@
+import { Link } from "expo-router";
 import { ImageBackground, Text, View } from "react-native";
 import { Button } from "react-native-paper";
 const image = require("./components/images/food.jpg");
@@ -14,14 +15,16 @@ export default function Index() {
                 Order sushi today
               </Text>
             </View>
-            <Button
-              className="py-3 text-2xl"
-              buttonColor="white"
-              textColor="#F87060"
-              mode="contained"
-            >
-              Get Started
-            </Button>
+            <Link href={"/form"} asChild>
+              <Button
+                className="py-3"
+                buttonColor="white"
+                textColor="#F87060"
+                mode="contained"
+              >
+                Get Started
+              </Button>
+            </Link>
           </View>
         </View>
       </ImageBackground>
