@@ -31,7 +31,7 @@ const Form = () => {
     setHasAccount(!hasAccount);
   };
 
-  const image = require("./components/images/black.jpg");
+  const image = require("./components/images/black.webp");
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
