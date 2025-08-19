@@ -1,5 +1,8 @@
-import React, { useState } from "react";
+import { useAuthStore } from "@/store/AuthStore";
+import { useRouter } from "expo-router";
+import React, { useEffect, useState } from "react";
 import {
+  ActivityIndicator,
   ImageBackground,
   Keyboard,
   KeyboardAvoidingView,
@@ -25,10 +28,30 @@ const Form = () => {
     email: "",
     password: "",
   });
+  const { login, register, isLoading, error, isLoggedIn } = useAuthStore();
   const [hasAccount, setHasAccount] = useState(false);
+
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isLoading && isLoggedIn) {
+      router.replace("/(tabs)");
+    }
+  }, [isLoggedIn, isLoading]);
+
+  if (isLoading) {
+    return <ActivityIndicator color={"green"} size={30} />;
+  }
 
   const handleRegister = () => {
     setHasAccount(!hasAccount);
+  };
+  const handleSubmit = () => {
+    if (hasAccount) {
+      register(form.email, form.password, `${form.firstname} ${form.lastname}`);
+    } else {
+      login(form.email, form.password);
+    }
   };
 
   const image = require("./components/images/black.webp");
@@ -85,12 +108,28 @@ const Form = () => {
                     }
                   />
                 </View>
-                <Button mode="contained">Sign Up</Button>
-                <View className="flex-row justify-center items-center">
-                  <Text className="text-white">Already have an account?</Text>
-                  <Button textColor="red" onPress={() => setHasAccount(false)}>
-                    Sign In
-                  </Button>
+                <Button mode="contained" onPress={handleSubmit}>
+                  Sign Up
+                </Button>
+                <View className="flex-col justify-center items-center">
+                  <View className="flex-row justify-center items-center">
+                    <Text className="text-white">Already have an account?</Text>
+                    <Button
+                      disabled={isLoading}
+                      loading={isLoading}
+                      textColor="red"
+                      onPress={() => setHasAccount(false)}
+                    >
+                      Sign In
+                    </Button>
+                  </View>
+                  <View>
+                    {error && (
+                      <Text className="text-red-500 text-center mt-4">
+                        {error}
+                      </Text>
+                    )}
+                  </View>
                 </View>
               </View>
             ) : (
@@ -124,12 +163,28 @@ const Form = () => {
                     }
                   />
                 </View>
-                <Button mode="contained">Sign In</Button>
-                <View className="flex-row justify-center items-center">
-                  <Text className="text-white">Dont have an account?</Text>
-                  <Button textColor="red" onPress={() => setHasAccount(true)}>
-                    Sign Up
-                  </Button>
+                <Button mode="contained" onPress={handleSubmit}>
+                  Sign In
+                </Button>
+                <View className="flex-column justify-center items-center">
+                  <View className="flex-row justify-center items-center">
+                    <Text className="text-white">Dont have an account?</Text>
+                    <Button
+                      disabled={isLoading}
+                      loading={isLoading}
+                      textColor="red"
+                      onPress={() => setHasAccount(true)}
+                    >
+                      Sign Up
+                    </Button>
+                  </View>
+                  <View>
+                    {error && (
+                      <Text className="text-red-500 text-center mt-4">
+                        {error}
+                      </Text>
+                    )}
+                  </View>
                 </View>
               </View>
             )}

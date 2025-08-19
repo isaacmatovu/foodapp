@@ -1,4 +1,4 @@
-import { account } from "@/lib/appwrite";
+import { account, ID } from "@/lib/appwrite";
 import { create } from "zustand";
 
 interface User {
@@ -50,7 +50,7 @@ export const useAuthStore = create<AuthState>((set) => ({
 
     try {
       //create account
-      await account.create(email, password, name);
+      await account.create(ID.unique(), email, password, name);
 
       //log in user automatically
       await account.createEmailPasswordSession(email, password);
