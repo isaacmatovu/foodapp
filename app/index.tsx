@@ -1,7 +1,7 @@
 import { Link } from "expo-router";
 import { ImageBackground, Text, View } from "react-native";
 import { Button } from "react-native-paper";
-const image = require("./components/images/food.jpg");
+const image = require("./components/images/food.webp");
 export default function Index() {
   return (
     <View className="flex-1">
