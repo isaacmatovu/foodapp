@@ -1,6 +1,6 @@
 import categories from "@/data/data";
 import React, { useState } from "react";
-import { FlatList, ScrollView, Text, View } from "react-native";
+import { FlatList, Image, ScrollView, Text, View } from "react-native";
 import { Button } from "react-native-paper";
 
 interface Categoty {
@@ -9,7 +9,7 @@ interface Categoty {
 
 const Category = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const [selectedCategory, setSelectedCategory] = useState<string>("Junk Food");
 
   //find the current selected object
   const currentCategory = categories.find(
@@ -46,7 +46,7 @@ const Category = () => {
       </View>
       {/* subcategories */}
       <View>
-        <Text>{selectedCategory}</Text>
+        <Text className="text-white text-2xl">{selectedCategory}</Text>
 
         {currentCategory && (
           <FlatList
@@ -58,7 +58,7 @@ const Category = () => {
             renderItem={({ item }) => (
               <View className="bg-white rounded-2xl p-4 mb-4 w-[48%] shadow-sm">
                 <View className="items-center mb-3">
-                  <Text className="text-4xl">{item.image}</Text>
+                  <Image source={item.image} className="w-full h-24" />
                 </View>
                 <Text className="text-lg font-semibold text-gray-800 text-center mb-1">
                   {item.name}
