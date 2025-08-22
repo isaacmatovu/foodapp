@@ -105,11 +105,6 @@ const categories = [
         image: images[12], // crisps.webp
       },
       {
-        name: "Rolex",
-        price: 3.49,
-        image: images[6], // rolex.webp
-      },
-      {
         name: "Cookies & Biscuits",
         price: 2.49,
         image: images[11], // cokie.webp
