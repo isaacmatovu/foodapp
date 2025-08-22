@@ -1,5 +1,6 @@
 import React from "react";
-import { ImageBackground, View } from "react-native";
+import { FlatList, ImageBackground, View } from "react-native";
+import AllCategories from "../components/home/AllCategories";
 import Category from "../components/home/category";
 import Header from "../components/home/header";
 
@@ -9,15 +10,18 @@ const Home = () => {
   return (
     <View style={{ flex: 1 }}>
       <ImageBackground source={image} style={{ flex: 1 }} resizeMode="cover">
-        <View
-          style={{
-            paddingTop: 20, // Add small padding to avoid notch overlap
-            paddingHorizontal: 16,
-          }}
-        >
-          <Header />
-          <Category />
-        </View>
+        <FlatList
+          data={[]}
+          renderItem={null}
+          ListHeaderComponent={
+            <View style={{ paddingTop: 20, paddingHorizontal: 16 }}>
+              <Header />
+              <Category />
+              <AllCategories />
+            </View>
+          }
+          showsVerticalScrollIndicator={false}
+        />
       </ImageBackground>
     </View>
   );
