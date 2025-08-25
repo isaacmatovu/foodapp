@@ -1,10 +1,11 @@
 import React from "react";
-import { Text, View } from "react-native";
+import { View } from "react-native";
+import Cart from "../components/cart/cart";
 
 const Food = () => {
   return (
     <View>
-      <Text>Food</Text>
+      <Cart />
     </View>
   );
 };

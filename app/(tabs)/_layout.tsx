@@ -1,14 +1,22 @@
 import { useAuthStore } from "@/store/AuthStore";
+import UseCartStore from "@/store/CartStore";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Tabs, useRouter } from "expo-router";
 import { useEffect } from "react";
-import { ActivityIndicator, StatusBar, useColorScheme } from "react-native";
+import {
+  ActivityIndicator,
+  StatusBar,
+  Text,
+  useColorScheme,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function TabsLayout() {
   const { isLoggedIn, isLoading } = useAuthStore();
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === "dark";
+  const { items } = UseCartStore();
 
   const router = useRouter();
 
@@ -69,11 +77,14 @@ export default function TabsLayout() {
             options={{
               headerShown: false,
               tabBarIcon: ({ focused, color }) => (
-                <Ionicons
-                  name={focused ? "fast-food-sharp" : "fast-food-outline"}
-                  size={24}
-                  color={color}
-                />
+                <View className="flex flex-row">
+                  <Ionicons
+                    name={focused ? "fast-food-sharp" : "fast-food-outline"}
+                    size={24}
+                    color={color}
+                  />
+                  <Text className="text-[#F87060]">{items.length}</Text>
+                </View>
               ),
             }}
           />
