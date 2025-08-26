@@ -13,7 +13,7 @@ interface CartStore {
   removeFromCart: (productId: string | number) => void;
   addToCart: (product: Product, quantity: number) => void;
   UpdateQuantity: (productId: string | number, quantity: number) => void;
-  getTotalPrice: () => void;
+  getTotalPrice: () => number;
   clearCart: () => void;
   items: Product[];
 }
