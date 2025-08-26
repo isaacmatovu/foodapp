@@ -1,7 +1,7 @@
 import categories from "@/data/data";
 import UseCartStore from "@/store/CartStore";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { FlatList, Image, StyleSheet, Text, View } from "react-native";
 import { Button, TextInput } from "react-native-paper";
 
@@ -9,12 +9,21 @@ interface QuantityState {
   [key: string]: number;
 }
 
+interface notificationState {
+  visible: boolean;
+  message: string;
+}
 const AllCategories = () => {
   const [quantities, setQuantities] = useState<QuantityState>({});
+  const [notification, setNotification] = useState<notificationState>({
+    visible: false,
+    message: "",
+  });
   const { addToCart } = UseCartStore();
+  const timeoutRef = useRef<null | number>(null);
 
   // Initialize quantities for all subcategories
-  React.useEffect(() => {
+  useEffect(() => {
     const initialQuantities: QuantityState = {};
     categories.forEach((category) => {
       category.subcategories.forEach((sub) => {
@@ -23,6 +32,28 @@ const AllCategories = () => {
     });
     setQuantities(initialQuantities);
   }, []);
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
+
+  const showNotification = (message: string) => {
+    // Clear any existing timeout
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+
+    setNotification({ visible: true, message });
+
+    // Hide notification after 2 seconds
+    timeoutRef.current = setTimeout(() => {
+      setNotification({ visible: false, message: "" });
+    }, 2000);
+  };
 
   const addQuantity = (subId: number) => {
     setQuantities((prev) => ({
@@ -48,6 +79,12 @@ const AllCategories = () => {
 
   return (
     <View>
+      {/* Notification Banner */}
+      {notification.visible && (
+        <View className="absolute top-0 left-0 right-0 bg-green-500 z-50 p-2 items-center">
+          <Text className="text-white text-lg">{notification.message}</Text>
+        </View>
+      )}
       {/* Header */}
       <View className="flex flex-row justify-between items-center mb-4">
         <View className="flex flex-row gap-2 items-center">
@@ -121,7 +158,10 @@ const AllCategories = () => {
                           </View>
                           <Button
                             mode="contained"
-                            onPress={() => addToCart(product, currentQuantity)}
+                            onPress={() => {
+                              (addToCart(product, currentQuantity),
+                                showNotification(`Added ${sub.name} to cart!`));
+                            }}
                           >
                             Order Now
                           </Button>
