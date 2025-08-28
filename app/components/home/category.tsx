@@ -8,7 +8,6 @@ interface Categoty {
 }
 
 const Category = () => {
-  const [isOpen, setIsOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string>("Junk Food");
 
   //find the current selected object
