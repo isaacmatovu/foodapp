@@ -158,11 +158,7 @@ const Form = () => {
                     <Text className="text-red-500">{errors.password}</Text>
                   </View>
                 </View>
-                <Button
-                  disabled={!validate()}
-                  mode="contained"
-                  onPress={handleSubmit}
-                >
+                <Button mode="contained" onPress={handleSubmit}>
                   Sign Up
                 </Button>
                 <View className="flex-col justify-center items-center">
