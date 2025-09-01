@@ -116,7 +116,9 @@ const Form = () => {
                         setForm((prev) => ({ ...prev, firstname: text }))
                       }
                     />
-                    <Text className="text-red-500">{errors.firstname}</Text>
+                    <Text className="text-red-500 mt-5">
+                      {errors.firstname}
+                    </Text>
                   </View>
                   <View className="flex flex-row">
                     <TextInput
@@ -127,7 +129,7 @@ const Form = () => {
                         setForm((prev) => ({ ...prev, lastname: text }))
                       }
                     />
-                    <Text className="text-red-500">{errors.lastname}</Text>
+                    <Text className="text-red-500 mt-5">{errors.lastname}</Text>
                   </View>
                   <View className="flex flex-row">
                     <TextInput
@@ -141,7 +143,7 @@ const Form = () => {
                         setForm((prev) => ({ ...prev, email: text }))
                       }
                     />
-                    <Text className="text-red-500">{errors.email}</Text>
+                    <Text className="text-red-500 mt-5">{errors.email}</Text>
                   </View>
                   <View className="flex flex-row">
                     <TextInput
@@ -155,7 +157,7 @@ const Form = () => {
                         setForm((prev) => ({ ...prev, password: text }))
                       }
                     />
-                    <Text className="text-red-500">{errors.password}</Text>
+                    <Text className="text-red-500 mt-5">{errors.password}</Text>
                   </View>
                 </View>
                 <Button mode="contained" onPress={handleSubmit}>
@@ -201,7 +203,7 @@ const Form = () => {
                         setForm((prev) => ({ ...prev, email: text }))
                       }
                     />
-                    <Text className="text-red-500">{errors.email}</Text>
+                    <Text className="text-red-500 mt-5">{errors.email}</Text>
                   </View>
                   <View className="flex flex-row">
                     <TextInput
@@ -216,7 +218,7 @@ const Form = () => {
                         setForm((prev) => ({ ...prev, password: text }))
                       }
                     />
-                    <Text className="text-red-500">{errors.password}</Text>
+                    <Text className="text-red-500 mt-5">{errors.password}</Text>
                   </View>
                 </View>
                 <Button mode="contained" onPress={handleSubmit}>
@@ -234,7 +236,7 @@ const Form = () => {
                       Sign Up
                     </Button>
                   </View>
-                  <View>
+                  <View className="mt-5">
                     {error && (
                       <Text className="text-red-500 text-center mt-4">
                         {error}
