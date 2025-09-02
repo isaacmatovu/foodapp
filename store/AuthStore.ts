@@ -92,7 +92,11 @@ export const useAuthStore = create<AuthState>((set) => ({
         isLoading: false,
       });
     } catch (error) {
-      set({ isLoading: false });
+      if (error instanceof Error)
+        set({
+          isLoading: false,
+          error: (error.message = "Check your internet connection"),
+        });
     }
   },
 }));
