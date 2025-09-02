@@ -35,13 +35,24 @@ const Form = () => {
     password: "",
   });
   const { login, register, isLoading, error, isLoggedIn } = useAuthStore();
+
   const [hasAccount, setHasAccount] = useState(false);
+  const [formError, setFormError] = useState<string>("");
   const [errors, setErrors] = useState<Errors>({
     firstname: "",
     lastname: "",
     email: "",
     password: "",
   });
+  // const load = isLoading;
+  // if (
+  //   !errors.email &&
+  //   !errors.firstname &&
+  //   !errors.lastname &&
+  //   !errors.password
+  // ) {
+  //   return load;
+  // }
 
   const router = useRouter();
 
@@ -51,7 +62,13 @@ const Form = () => {
     }
   }, [isLoggedIn, isLoading]);
 
-  if (isLoading) {
+  if (
+    isLoading &&
+    form.email !== "" &&
+    form.firstname !== "" &&
+    form.lastname !== "" &&
+    form.password !== ""
+  ) {
     return <ActivityIndicator color={"green"} size={30} />;
   }
 
@@ -61,9 +78,11 @@ const Form = () => {
 
   const validate = () => {
     const Error = { firstname: "", lastname: "", email: "", password: "" };
-    if (!form.firstname) {
+    if (!form.firstname.trim()) {
       Error.firstname = "Please enter your firstname";
-    } else if (!form.lastname) {
+    }
+
+    if (!form.lastname) {
       Error.lastname = "Please enter your lastname";
     }
 
@@ -84,8 +103,23 @@ const Form = () => {
   const handleSubmit = () => {
     const ErrorForm = validate();
     if (hasAccount) {
-      setErrors(ErrorForm);
-      register(form.email, form.password, `${form.firstname} ${form.lastname}`);
+      try {
+        setErrors(ErrorForm);
+        register(
+          form.email,
+          form.password,
+          `${form.firstname} ${form.lastname}`
+        );
+      } catch {
+        if (
+          form.firstname !== "" &&
+          form.lastname !== "" &&
+          form.password !== "" &&
+          form.email !== ""
+        ) {
+          setFormError("Check your internet connection");
+        }
+      }
     } else {
       setErrors(ErrorForm);
       login(form.email, form.password);
@@ -106,8 +140,8 @@ const Form = () => {
                 <Text className="text-white text-4xl text-center">
                   Join Us to make this wounderful journey
                 </Text>
-                <View className="mb-6">
-                  <View className="flex flex-row">
+                <View className="">
+                  <View className="flex flex-col">
                     <TextInput
                       style={styles.text}
                       label="Enter your first name"
@@ -116,11 +150,11 @@ const Form = () => {
                         setForm((prev) => ({ ...prev, firstname: text }))
                       }
                     />
-                    <Text className="text-red-500 mt-5">
+                    <Text className="text-red-500 mb-3">
                       {errors.firstname}
                     </Text>
                   </View>
-                  <View className="flex flex-row">
+                  <View className="flex flex-col">
                     <TextInput
                       style={styles.text}
                       label="Enter your Last name"
@@ -129,9 +163,9 @@ const Form = () => {
                         setForm((prev) => ({ ...prev, lastname: text }))
                       }
                     />
-                    <Text className="text-red-500 mt-5">{errors.lastname}</Text>
+                    <Text className="text-red-500 mb-3">{errors.lastname}</Text>
                   </View>
-                  <View className="flex flex-row">
+                  <View className="flex flex-col">
                     <TextInput
                       style={styles.text}
                       autoCapitalize="none"
@@ -143,9 +177,9 @@ const Form = () => {
                         setForm((prev) => ({ ...prev, email: text }))
                       }
                     />
-                    <Text className="text-red-500 mt-5">{errors.email}</Text>
+                    <Text className="text-red-500 mb-3">{errors.email}</Text>
                   </View>
-                  <View className="flex flex-row">
+                  <View className="flex flex-col">
                     <TextInput
                       style={styles.text}
                       label="Enter password"
@@ -157,18 +191,21 @@ const Form = () => {
                         setForm((prev) => ({ ...prev, password: text }))
                       }
                     />
-                    <Text className="text-red-500 mt-5">{errors.password}</Text>
+                    <Text className="text-red-500 mb-3">{errors.password}</Text>
                   </View>
                 </View>
-                <Button mode="contained" onPress={handleSubmit}>
-                  Sign Up
+                <Button
+                  disabled={isLoading}
+                  loading={isLoading}
+                  mode="contained"
+                  onPress={handleSubmit}
+                >
+                  {isLoading ? "Sigining in..." : "Sign Up"}
                 </Button>
                 <View className="flex-col justify-center items-center">
                   <View className="flex-row justify-center items-center">
                     <Text className="text-white">Already have an account?</Text>
                     <Button
-                      disabled={isLoading}
-                      loading={isLoading}
                       textColor="red"
                       onPress={() => setHasAccount(false)}
                     >
@@ -176,6 +213,11 @@ const Form = () => {
                     </Button>
                   </View>
                   <View>
+                    {formError && (
+                      <Text className="text-red-500 text-center mt-4">
+                        {formError}
+                      </Text>
+                    )}
                     {error && (
                       <Text className="text-red-500 text-center mt-4">
                         {error}
