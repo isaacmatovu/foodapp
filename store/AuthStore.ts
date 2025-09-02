@@ -69,7 +69,10 @@ export const useAuthStore = create<AuthState>((set) => ({
       });
     } catch (error) {
       if (error instanceof Error)
-        set({ error: error.message, isLoading: false });
+        set({
+          error: (error.message = "Fill in the form"),
+          isLoading: false,
+        });
     }
   },
 
