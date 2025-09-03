@@ -26,6 +26,10 @@ interface Errors {
   email: string;
   password: string;
 }
+interface LoginErrors {
+  email: string;
+  password: string;
+}
 
 const Form = () => {
   const [form, setForm] = useState<FormData>({
@@ -41,6 +45,10 @@ const Form = () => {
   const [errors, setErrors] = useState<Errors>({
     firstname: "",
     lastname: "",
+    email: "",
+    password: "",
+  });
+  const [LoginError, setLoginError] = useState<LoginErrors>({
     email: "",
     password: "",
   });
@@ -72,19 +80,8 @@ const Form = () => {
     return <ActivityIndicator color={"green"} size={30} />;
   }
 
-  const handleRegister = () => {
-    setHasAccount(!hasAccount);
-  };
-
-  const validate = () => {
-    const Error = { firstname: "", lastname: "", email: "", password: "" };
-    if (!form.firstname.trim()) {
-      Error.firstname = "Please enter your firstname";
-    }
-
-    if (!form.lastname) {
-      Error.lastname = "Please enter your lastname";
-    }
+  const validateLogin = () => {
+    const Error = { email: "", password: "" };
 
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!form.email) {
@@ -98,31 +95,93 @@ const Form = () => {
     } else if (form.password.length < 8) {
       Error.password = "Password should be atleast 8 characters long";
     }
-    return Error;
+    setLoginError(Error);
   };
-  const handleSubmit = () => {
-    const ErrorForm = validate();
+
+  const validate = () => {
+    const Error = { firstname: "", lastname: "", email: "", password: "" };
+
     if (hasAccount) {
-      try {
-        setErrors(ErrorForm);
-        register(
-          form.email,
-          form.password,
-          `${form.firstname} ${form.lastname}`
-        );
-      } catch {
-        if (
-          form.firstname !== "" &&
-          form.lastname !== "" &&
-          form.password !== "" &&
-          form.email !== ""
-        ) {
-          setFormError("Check your internet connection");
-        }
+      if (!form.firstname.trim()) {
+        Error.firstname = "Please enter your firstname";
       }
-    } else {
-      setErrors(ErrorForm);
+
+      if (!form.lastname) {
+        Error.lastname = "Please enter your lastname";
+      }
+
+      const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+      if (!form.email) {
+        Error.email = "Enter your email address";
+      } else if (!emailRegex.test(form.email)) {
+        Error.email = "Enter a valid email";
+      }
+
+      if (!form.password) {
+        Error.password = "Enter your password";
+      } else if (form.password.length < 8) {
+        Error.password = "Password should be atleast 8 characters long";
+      }
+      setErrors(Error);
+    }
+  };
+
+  // const
+  // const handleSubmit = async () => {
+  //   if (hasAccount) {
+  //     try {
+  //       validate();
+  //       register(
+  //         form.email,
+  //         form.password,
+  //         `${form.firstname} ${form.lastname}`
+  //       );
+  //     } catch {
+  //       if (
+  //         form.firstname !== "" &&
+  //         form.lastname !== "" &&
+  //         form.password !== "" &&
+  //         form.email !== ""
+  //       ) {
+  //         setFormError("Check your internet connection");
+  //       }
+  //     }
+  //   } else {
+  //     try {
+  //       validate();
+  //       login(form.email, form.password);
+  //     } catch {
+  //       if (form.password !== "" && form.email !== "") {
+  //         setFormError("Check your internet connection");
+  //       }
+  //     }
+  //   }
+  // };
+
+  const handleRegister = async () => {
+    try {
+      validate();
+      register(form.email, form.password, `${form.firstname} ${form.lastname}`);
+    } catch {
+      if (
+        form.firstname !== "" &&
+        form.lastname !== "" &&
+        form.password !== "" &&
+        form.email !== ""
+      ) {
+        setFormError("Check your internet connection");
+      }
+    }
+  };
+
+  const handleLogin = async () => {
+    try {
+      validateLogin();
       login(form.email, form.password);
+    } catch {
+      if (form.password !== "" && form.email !== "") {
+        setFormError("Check your internet connection");
+      }
     }
   };
 
@@ -198,7 +257,8 @@ const Form = () => {
                   disabled={isLoading}
                   loading={isLoading}
                   mode="contained"
-                  onPress={handleSubmit}
+                  buttonColor={isLoading ? "gray" : "green"}
+                  onPress={handleRegister}
                 >
                   {isLoading ? "Sigining in..." : "Sign Up"}
                 </Button>
@@ -232,7 +292,7 @@ const Form = () => {
                   <Text className="text-white text-4xl text-center">
                     Sign In
                   </Text>
-                  <View className="flex flex-row">
+                  <View className="flex flex-col">
                     <TextInput
                       style={styles.text}
                       activeOutlineColor="green"
@@ -245,9 +305,11 @@ const Form = () => {
                         setForm((prev) => ({ ...prev, email: text }))
                       }
                     />
-                    <Text className="text-red-500 mt-5">{errors.email}</Text>
+                    <Text className="text-red-500 mb-3">
+                      {LoginError.email}
+                    </Text>
                   </View>
-                  <View className="flex flex-row">
+                  <View className="flex flex-col">
                     <TextInput
                       style={styles.text}
                       activeOutlineColor="green"
@@ -260,21 +322,23 @@ const Form = () => {
                         setForm((prev) => ({ ...prev, password: text }))
                       }
                     />
-                    <Text className="text-red-500 mt-5">{errors.password}</Text>
+                    <Text className="text-red-500 mb-3">
+                      {LoginError.password}
+                    </Text>
                   </View>
                 </View>
-                <Button mode="contained" onPress={handleSubmit}>
-                  Sign In
+                <Button
+                  mode="contained"
+                  disabled={isLoading}
+                  loading={isLoading}
+                  onPress={handleLogin}
+                >
+                  {isLoading ? "Signing in..." : "Sign in"}
                 </Button>
                 <View className="flex-column justify-center items-center">
                   <View className="flex-row justify-center items-center">
                     <Text className="text-white">Dont have an account?</Text>
-                    <Button
-                      disabled={isLoading}
-                      loading={isLoading}
-                      textColor="red"
-                      onPress={() => setHasAccount(true)}
-                    >
+                    <Button textColor="red" onPress={() => setHasAccount(true)}>
                       Sign Up
                     </Button>
                   </View>
