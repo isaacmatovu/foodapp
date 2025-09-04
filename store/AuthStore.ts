@@ -70,7 +70,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     } catch (error) {
       if (error instanceof Error)
         set({
-          error: (error.message = "Fill in the form"),
+          error: error.message,
           isLoading: false,
         });
     }
@@ -98,7 +98,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       if (error instanceof Error)
         set({
           isLoading: false,
-          error: (error.message = "Check your internet connection"),
+          error: (error.message = "login or register"),
         });
     }
   },
