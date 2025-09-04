@@ -1,10 +1,11 @@
 import React from "react";
-import { Text, View } from "react-native";
+import { View } from "react-native";
+import Profile from "../components/profile/profile";
 
 const Notifications = () => {
   return (
     <View>
-      <Text>Notifications</Text>
+      <Profile />
     </View>
   );
 };
