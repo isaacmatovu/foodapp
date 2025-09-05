@@ -38,7 +38,8 @@ const Form = () => {
     email: "",
     password: "",
   });
-  const { login, register, isLoading, error, isLoggedIn } = useAuthStore();
+  const { login, register, isLoading, error, isLoggedIn, user } =
+    useAuthStore();
 
   const [hasAccount, setHasAccount] = useState(false);
   const [formError, setFormError] = useState<string>("");
@@ -65,10 +66,14 @@ const Form = () => {
   const router = useRouter();
 
   useEffect(() => {
-    if (!isLoading && isLoggedIn) {
-      router.replace("/(tabs)");
+    if (!isLoading && isLoggedIn && user) {
+      if (user.email === "matovuisaac98@gmail.com") {
+        router.replace("/admin/(tabs)");
+      } else {
+        router.replace("/(tabs)");
+      }
     }
-  }, [isLoggedIn, isLoading]);
+  }, [isLoggedIn, isLoading, user]);
 
   if (
     isLoading &&
@@ -126,8 +131,6 @@ const Form = () => {
     }
   };
 
-  // const
-  // const handleSubmit = async () => {
   //   if (hasAccount) {
   //     try {
   //       validate();
