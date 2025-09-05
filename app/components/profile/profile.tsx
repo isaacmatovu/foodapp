@@ -6,9 +6,10 @@ import { Text, View } from "react-native";
 
 const Profile = () => {
   const { user } = useAuthStore();
+  //essentially this will be the followup page where the order cart items are displayed for a follow up
   return (
     <View className="bg-black h-full w-full">
-      <View className="bg-gray-900 mx-4 mt-5 rounded-md border-r-orange-500 border-4 border-l-orange-500">
+      {/* <View className="bg-gray-900 mx-4 mt-5 rounded-md border-r-orange-500 border-4 border-l-orange-500">
         <View className="flex flex-row border-b-slate-700 border mb-5">
           <View>
             <AntDesign name="smile-circle" size={50} color="pink" />
@@ -25,7 +26,7 @@ const Profile = () => {
       </View>
       <View></View>
       <View></View>
-      <View></View>
+      <View></View> */}
     </View>
   );
 };
