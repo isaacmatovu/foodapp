@@ -6,6 +6,7 @@ import EvilIcons from "@expo/vector-icons/EvilIcons";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
+  ActivityIndicator,
   Image,
   Keyboard,
   KeyboardAvoidingView,
@@ -169,6 +170,7 @@ const Cart = () => {
             behavior={Platform.OS === "ios" ? "padding" : "height"}
             className="flex-1"
           >
+            <Text className="text-red-500 text-xl">Enter table number</Text>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
               <TextInput
                 keyboardType="number-pad"
@@ -192,6 +194,7 @@ const Cart = () => {
           >
             Make order
           </Button>
+          {loading && <ActivityIndicator color={"green"} size={30} />}
         </ScrollView>
       )}
     </View>
