@@ -17,22 +17,30 @@ export default function TabsLayout() {
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === "dark";
   const { items } = UseCartStore();
-
   const router = useRouter();
 
   useEffect(() => {
-    if (!isLoggedIn && !isLoading) {
+    if (!isLoading && !isLoggedIn) {
       router.replace("/form");
     }
   }, [isLoading, isLoggedIn]);
 
-  if (!isLoggedIn || isLoading) {
-    return <ActivityIndicator size={30} color={"green"} />;
+  // Show loading indicator while checking auth status
+  if (isLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size={30} color={"green"} />
+      </View>
+    );
+  }
+
+  // Don't render tabs if not logged in (will redirect)
+  if (!isLoggedIn) {
+    return null;
   }
 
   return (
     <>
-      {/* StatusBar configuration - this controls the time/battery area */}
       <StatusBar
         barStyle={isDarkMode ? "light-content" : "dark-content"}
         backgroundColor={isDarkMode ? "#102542" : "#fff"}
@@ -41,7 +49,7 @@ export default function TabsLayout() {
 
       <SafeAreaView
         style={{ flex: 1, backgroundColor: isDarkMode ? "#000" : "#fff" }}
-        edges={["left", "right", "top"]} // Remove bottom safe area
+        edges={["left", "right", "top"]}
       >
         <Tabs
           screenOptions={{
@@ -52,7 +60,6 @@ export default function TabsLayout() {
               borderTopWidth: 0,
               elevation: 0,
             },
-            // Set header style based on theme
             headerStyle: {
               backgroundColor: isDarkMode ? "#102542" : "#fff",
             },
@@ -77,13 +84,17 @@ export default function TabsLayout() {
             options={{
               headerShown: false,
               tabBarIcon: ({ focused, color }) => (
-                <View className="flex flex-row">
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
                   <Ionicons
                     name={focused ? "fast-food-sharp" : "fast-food-outline"}
                     size={24}
                     color={color}
                   />
-                  <Text className="text-[#F87060]">{items.length}</Text>
+                  {items.length > 0 && (
+                    <Text style={{ color: "#F87060", marginLeft: 4 }}>
+                      {items.length}
+                    </Text>
+                  )}
                 </View>
               ),
             }}
