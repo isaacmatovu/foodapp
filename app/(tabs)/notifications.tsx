@@ -1,11 +1,11 @@
 import React from "react";
 import { View } from "react-native";
-import Profile from "../components/profile/profile";
+import Orders from "../components/userdetails.tsx/details";
 
 const Notifications = () => {
   return (
     <View>
-      <Profile />
+      <Orders />
     </View>
   );
 };
