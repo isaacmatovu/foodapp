@@ -1,7 +1,8 @@
 import { useAuthStore } from "@/store/AuthStore";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import React from "react";
-import { Image, Text, View } from "react-native";
+import { Text, View } from "react-native";
 
 const Header = () => {
   const { user } = useAuthStore();
@@ -9,7 +10,12 @@ const Header = () => {
   return (
     <View className="flex flex-row justify-between text-center">
       <View className="border border-white rounded-full">
-        <Image source={image} className="rounded-full h-20 w-20" />
+        <FontAwesome
+          name="user-circle"
+          size={70}
+          color="white"
+          className="h-20 w-20"
+        />
       </View>
       <View className="justify-center items-start">
         <Text className="text-white text-xl font-bold">Hello {user?.name}</Text>
