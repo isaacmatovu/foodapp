@@ -1,8 +1,8 @@
 import { useAuthStore } from "@/store/AuthStore";
 import UseCartStore from "@/store/CartStore";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { Tabs, useRouter } from "expo-router";
-import { useEffect } from "react";
+import { Redirect, Tabs, useRouter } from "expo-router";
+import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   StatusBar,
@@ -18,15 +18,20 @@ export default function TabsLayout() {
   const isDarkMode = colorScheme === "dark";
   const { items } = UseCartStore();
   const router = useRouter();
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
 
   useEffect(() => {
-    if (!isLoading && !isLoggedIn) {
-      router.replace("/form");
+    // Check if authentication state is determined
+    if (!isLoading) {
+      setIsCheckingAuth(false);
+      if (!isLoggedIn) {
+        router.replace("/form");
+      }
     }
   }, [isLoading, isLoggedIn]);
 
   // Show loading indicator while checking auth status
-  if (isLoading) {
+  if (isCheckingAuth || isLoading) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <ActivityIndicator size={30} color={"green"} />
@@ -34,9 +39,9 @@ export default function TabsLayout() {
     );
   }
 
-  // Don't render tabs if not logged in (will redirect)
+  // Don't render tabs if not logged in
   if (!isLoggedIn) {
-    return null;
+    return <Redirect href="/form" />;
   }
 
   return (
@@ -91,9 +96,27 @@ export default function TabsLayout() {
                     color={color}
                   />
                   {items.length > 0 && (
-                    <Text style={{ color: "#F87060", marginLeft: 4 }}>
-                      {items.length}
-                    </Text>
+                    <View
+                      style={{
+                        backgroundColor: "#F87060",
+                        borderRadius: 10,
+                        minWidth: 20,
+                        height: 20,
+                        justifyContent: "center",
+                        alignItems: "center",
+                        marginLeft: 4,
+                      }}
+                    >
+                      <Text
+                        style={{
+                          color: "white",
+                          fontSize: 12,
+                          fontWeight: "bold",
+                        }}
+                      >
+                        {items.length}
+                      </Text>
+                    </View>
                   )}
                 </View>
               ),
