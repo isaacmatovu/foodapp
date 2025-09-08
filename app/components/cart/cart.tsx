@@ -62,8 +62,8 @@ const Cart = () => {
         ID.unique(),
         orderData
       );
-      router.replace("/(tabs)");
       clearCart();
+      router.replace("/(tabs)/notifications");
     } catch {
       setProductError("An error occured while sending to the database");
     } finally {
@@ -151,7 +151,7 @@ const Cart = () => {
           ))}
           <View className="flex flex-row justify-between items-center">
             <View className="flex">
-              <Text className="text-xl font-semibold">
+              <View className="flex  flex-row gap-3">
                 <TouchableOpacity onPress={() => setViewPrcie(!ViewPrice)}>
                   <Entypo
                     name={ViewPrice ? "eye-with-line" : "eye"}
@@ -159,8 +159,11 @@ const Cart = () => {
                     color="black"
                   />
                 </TouchableOpacity>
-                Total Price : {ViewPrice ? "******" : totalPrice.toFixed(2)}
-              </Text>
+                <Text className="text-xl font-semibold">
+                  Total Price : Ugshs.
+                  {ViewPrice ? "******" : totalPrice.toFixed(2)}
+                </Text>
+              </View>
             </View>
             <Button style={styles.button} onPress={clearCart} mode="contained">
               Clear cart
@@ -174,7 +177,7 @@ const Cart = () => {
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
               <TextInput
                 keyboardType="number-pad"
-                placeholder="Enter table number"
+                placeholder="Enter number"
                 onChangeText={(text) => setNumberInput(Number(text))}
                 style={styles.input}
               />
@@ -185,15 +188,18 @@ const Cart = () => {
           {productError && (
             <Text className="text-red-500 mt-3">{productError}</Text>
           )}
-          <Button
-            disabled={NumberInput === 0 || loading}
-            mode="contained"
-            onPress={() => {
-              (handlesubmit(), handleCart());
-            }}
-          >
-            Make order
-          </Button>
+          <View className="flex justify-center items-center">
+            <Button
+              disabled={NumberInput === 0 || loading || !NumberInput}
+              mode="contained"
+              style={styles.orderButton}
+              onPress={() => {
+                (handlesubmit(), handleCart());
+              }}
+            >
+              Make order
+            </Button>
+          </View>
           {loading && <ActivityIndicator color={"green"} size={30} />}
         </ScrollView>
       )}
@@ -203,16 +209,21 @@ const Cart = () => {
 
 const styles = StyleSheet.create({
   textInput: {
-    width: 50,
+    width: 100,
     height: 50,
     backgroundColor: "#f0f0f0",
     textAlign: "center",
+    marginBottom: 8,
   },
   button: {
-    width: 200,
+    width: 150,
+    marginRight: 4,
   },
   input: {
-    width: 80,
+    width: 150,
+  },
+  orderButton: {
+    width: 300,
   },
 });
 export default Cart;
