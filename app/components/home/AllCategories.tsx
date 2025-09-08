@@ -181,10 +181,11 @@ const AllCategories = () => {
 
 const styles = StyleSheet.create({
   textInput: {
-    width: 50,
+    width: 100,
     height: 50,
     backgroundColor: "#f0f0f0",
     textAlign: "center",
+    marginBottom: 8,
   },
 });
 
