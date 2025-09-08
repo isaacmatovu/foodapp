@@ -2,7 +2,7 @@ import { databases } from "@/lib/appwrite";
 import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 interface Orders {
-  id: string;
+  $id: string;
   userId: string;
   Username: string;
   tableNumber: number;
@@ -49,7 +49,7 @@ const Admin = () => {
               //pass the items  string back to an array of objects
               const orderItems: OrderItem[] = JSON.parse(order.items);
               return (
-                <View key={order.id} style={styles.orderCard}>
+                <View key={order.$id} style={styles.orderCard}>
                   <Text>Customer:{order.Username}</Text>
                   <Text>Table:{order.tableNumber}</Text>
                   <Text>Date:{new Date(order.createdAt).toLocaleString()}</Text>
