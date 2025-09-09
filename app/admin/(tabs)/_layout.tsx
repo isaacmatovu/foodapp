@@ -40,7 +40,6 @@ export default function TabsLayout() {
         style={{ flex: 1, backgroundColor: isDarkMode ? "#000" : "#fff" }}
         edges={["left", "right", "top"]} // Remove bottom safe area
       >
-        {}{" "}
         <Tabs
           screenOptions={{
             tabBarActiveTintColor: "#F87060",
