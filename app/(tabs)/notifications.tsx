@@ -1,6 +1,6 @@
 import React from "react";
 import { View } from "react-native";
-import Orders from "../components/userdetails.tsx/details";
+import Orders from "../components/userdetails/details";
 
 const Notifications = () => {
   return (
