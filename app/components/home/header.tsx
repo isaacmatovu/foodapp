@@ -6,7 +6,6 @@ import { Text, View } from "react-native";
 
 const Header = () => {
   const { user } = useAuthStore();
-  const image = require("../images/isaac.webp");
   return (
     <View className="flex flex-row justify-between text-center">
       <View className="border border-white rounded-full">
