@@ -12,6 +12,12 @@ const image11 = require("./images/popcorn.webp");
 const image12 = require("./images/cokie.webp");
 const image13 = require("./images/crisps.webp");
 const image14 = require("./images/biscuits.webp");
+const image15 = require("./images/hotdog.webp");
+const image16 = require("./images/soda.webp");
+const image17 = require("./images/chocolate.webp");
+const image18 = require("./images/smoothie.webp");
+const image19 = require("./images/sandwich.webp");
+const image20 = require("./images/meat.webp");
 
 export default [
   image1,
@@ -28,4 +34,10 @@ export default [
   image12,
   image13,
   image14,
+  image15,
+  image16,
+  image17,
+  image18,
+  image19,
+  image20,
 ];
