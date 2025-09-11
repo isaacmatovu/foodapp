@@ -4,18 +4,14 @@ import UseCartStore from "@/store/CartStore";
 import Entypo from "@expo/vector-icons/Entypo";
 import EvilIcons from "@expo/vector-icons/EvilIcons";
 import { useRouter } from "expo-router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Image,
-  Keyboard,
-  KeyboardAvoidingView,
-  Platform,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
-  TouchableWithoutFeedback,
   View,
 } from "react-native";
 import { Button, TextInput } from "react-native-paper";
@@ -36,6 +32,10 @@ const Cart = () => {
   const { user } = useAuthStore();
   const totalPrice = getTotalPrice();
   const router = useRouter();
+
+  useEffect(() => {
+    handleValidation();
+  }, [NumberInput]);
 
   const handleCart = async () => {
     const itemsString = JSON.stringify(
@@ -73,16 +73,15 @@ const Cart = () => {
 
   const handleValidation = () => {
     const Error: Error = { number: "" };
-    if (NumberInput === 0 || NumberInput < 0) {
-      Error.number = "Enter a number more than 0 ";
-    } else if (!NumberInput) {
-      Error.number = "Enter table number";
+    if (!NumberInput || NumberInput === 0) {
+      Error.number = "Enter table number ";
     }
     setErrors(Error);
   };
 
   const handlesubmit = () => {
     handleValidation();
+    handleCart();
   };
 
   return (
@@ -169,22 +168,20 @@ const Cart = () => {
               Clear cart
             </Button>
           </View>
-          <KeyboardAvoidingView
-            behavior={Platform.OS === "ios" ? "padding" : "height"}
-            className="flex-1"
-          >
-            <Text className="text-red-500 text-xl">Enter table number</Text>
-            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-              <TextInput
-                keyboardType="number-pad"
-                placeholder="Enter number"
-                onChangeText={(text) => setNumberInput(Number(text))}
-                style={styles.input}
-              />
-            </TouchableWithoutFeedback>
-          </KeyboardAvoidingView>
 
-          {error && <Text className="text-red-500 mt-3">{error.number}</Text>}
+          {error?.number && (
+            <Text className="text-red-500 text-xl">{error?.number}</Text>
+          )}
+          <TextInput
+            keyboardType="number-pad"
+            placeholder="Enter number"
+            onChangeText={(text: string) => {
+              setNumberInput(Number(text));
+            }}
+            value={NumberInput.toString()}
+            style={styles.input}
+          />
+
           {productError && (
             <Text className="text-red-500 mt-3">{productError}</Text>
           )}
@@ -194,7 +191,7 @@ const Cart = () => {
               mode="contained"
               style={styles.orderButton}
               onPress={() => {
-                (handlesubmit(), handleCart());
+                handlesubmit();
               }}
             >
               Make order
@@ -221,6 +218,7 @@ const styles = StyleSheet.create({
   },
   input: {
     width: 150,
+    marginBottom: 10,
   },
   orderButton: {
     width: 300,
