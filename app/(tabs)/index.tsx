@@ -1,6 +1,7 @@
 import React from "react";
 import { FlatList, ImageBackground, View } from "react-native";
 import AllCategories from "../components/home/AllCategories";
+import Carousel from "../components/home/Carousel";
 import Category from "../components/home/category";
 import Header from "../components/home/header";
 
@@ -16,6 +17,7 @@ const Home = () => {
           ListHeaderComponent={
             <View style={{ paddingTop: 20, paddingHorizontal: 16 }}>
               <Header />
+              <Carousel />
               <Category />
               <AllCategories />
             </View>
