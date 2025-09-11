@@ -7,6 +7,7 @@ import {
   Keyboard,
   KeyboardAvoidingView,
   Platform,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableWithoutFeedback,
@@ -38,7 +39,7 @@ const Form = () => {
     email: "",
     password: "",
   });
-  const { login, register, isLoading, error, isLoggedIn, user } =
+  const { setError, login, register, isLoading, error, isLoggedIn, user } =
     useAuthStore();
 
   const [hasAccount, setHasAccount] = useState(false);
@@ -49,19 +50,21 @@ const Form = () => {
     email: "",
     password: "",
   });
-  const [LoginError, setLoginError] = useState<LoginErrors>({
+  const [loginErrors, setLoginErrors] = useState<LoginErrors>({
     email: "",
     password: "",
   });
-  // const load = isLoading;
-  // if (
-  //   !errors.email &&
-  //   !errors.firstname &&
-  //   !errors.lastname &&
-  //   !errors.password
-  // ) {
-  //   return load;
-  // }
+
+  useEffect(() => {
+    if (hasAccount) {
+      validate();
+    } else {
+      validateLogin();
+    }
+    if (form.email && form.firstname && form.lastname && form.password) {
+      setError("");
+    }
+  }, [form, hasAccount]);
 
   const router = useRouter();
 
@@ -75,199 +78,182 @@ const Form = () => {
     }
   }, [isLoggedIn, isLoading, user]);
 
-  if (
-    isLoading &&
-    form.email !== "" &&
-    form.firstname !== "" &&
-    form.lastname !== "" &&
-    form.password !== ""
-  ) {
-    return <ActivityIndicator color={"green"} size={30} />;
-  }
-
   const validateLogin = () => {
-    const Error = { email: "", password: "" };
+    const newErrors = { email: "", password: "" };
 
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!form.email) {
-      Error.email = "Enter your email address";
+      newErrors.email = "Enter your email address";
     } else if (!emailRegex.test(form.email)) {
-      Error.email = "Enter a valid email";
+      newErrors.email = "Enter a valid email";
     }
 
     if (!form.password) {
-      Error.password = "Enter your password";
+      newErrors.password = "Enter your password";
     } else if (form.password.length < 8) {
-      Error.password = "Password should be atleast 8 characters long";
+      newErrors.password = "Password should be atleast 8 characters long";
     }
-    setLoginError(Error);
+    setLoginErrors(newErrors);
   };
 
   const validate = () => {
-    const Error = { firstname: "", lastname: "", email: "", password: "" };
+    const newErrors = { firstname: "", lastname: "", email: "", password: "" };
 
-    if (hasAccount) {
-      if (!form.firstname.trim()) {
-        Error.firstname = "Please enter your firstname";
-      }
-
-      if (!form.lastname) {
-        Error.lastname = "Please enter your lastname";
-      }
-
-      const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-      if (!form.email) {
-        Error.email = "Enter your email address";
-      } else if (!emailRegex.test(form.email)) {
-        Error.email = "Enter a valid email";
-      }
-
-      if (!form.password) {
-        Error.password = "Enter your password";
-      } else if (form.password.length < 8) {
-        Error.password = "Password should be atleast 8 characters long";
-      }
-      setErrors(Error);
+    if (!form.firstname.trim()) {
+      newErrors.firstname = "Please enter your firstname";
     }
+
+    if (!form.lastname) {
+      newErrors.lastname = "Please enter your lastname";
+    }
+
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!form.email) {
+      newErrors.email = "Enter your email address";
+    } else if (!emailRegex.test(form.email)) {
+      newErrors.email = "Enter a valid email";
+    }
+
+    if (!form.password) {
+      newErrors.password = "Enter your password";
+    } else if (form.password.length < 8) {
+      newErrors.password = "Password should be atleast 8 characters long";
+    }
+    setErrors(newErrors);
   };
 
-  //   if (hasAccount) {
-  //     try {
-  //       validate();
-  //       register(
-  //         form.email,
-  //         form.password,
-  //         `${form.firstname} ${form.lastname}`
-  //       );
-  //     } catch {
-  //       if (
-  //         form.firstname !== "" &&
-  //         form.lastname !== "" &&
-  //         form.password !== "" &&
-  //         form.email !== ""
-  //       ) {
-  //         setFormError("Check your internet connection");
-  //       }
-  //     }
-  //   } else {
-  //     try {
-  //       validate();
-  //       login(form.email, form.password);
-  //     } catch {
-  //       if (form.password !== "" && form.email !== "") {
-  //         setFormError("Check your internet connection");
-  //       }
-  //     }
-  //   }
-  // };
-
   const handleRegister = async () => {
+    validate();
+
     try {
-      validate();
-      register(form.email, form.password, `${form.firstname} ${form.lastname}`);
+      await register(
+        form.email,
+        form.password,
+        `${form.firstname} ${form.lastname}`
+      );
     } catch {
-      if (
-        form.firstname !== "" &&
-        form.lastname !== "" &&
-        form.password !== "" &&
-        form.email !== ""
-      ) {
-        setFormError("Check your internet connection");
-      }
+      setFormError("Check your internet connection");
     }
   };
 
   const handleLogin = async () => {
+    validateLogin();
+
     try {
-      validateLogin();
-      login(form.email, form.password);
+      await login(form.email, form.password);
     } catch {
-      if (form.password !== "" && form.email !== "") {
-        setFormError("Check your internet connection");
-      }
+      setFormError("Check your internet connection");
     }
   };
 
   const image = require("./components/images/black.webp");
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      className="flex-1"
+      style={{ flex: 1 }}
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <ImageBackground source={image} className="flex-1" resizeMode="cover">
-          <View className=" flex-1  p-6 justify-center">
-            {hasAccount ? (
-              <View className="mb-6">
-                <Text className="text-white text-4xl text-center">
-                  Join Us to make this wounderful journey
-                </Text>
-                <View className="">
-                  <View className="flex flex-col">
+        <ImageBackground
+          source={image}
+          style={styles.backgroundImage}
+          resizeMode="cover"
+        >
+          <ScrollView
+            contentContainerStyle={styles.scrollContainer}
+            keyboardShouldPersistTaps="handled"
+          >
+            <View style={styles.container}>
+              {isLoading ? (
+                <ActivityIndicator
+                  color={"green"}
+                  size={30}
+                  style={styles.loader}
+                />
+              ) : hasAccount ? (
+                <View style={styles.formContainer}>
+                  <Text style={styles.title}>
+                    Join Us to make this wonderful journey
+                  </Text>
+                  <View style={styles.inputGroup}>
                     <TextInput
-                      style={styles.text}
+                      style={styles.textInput}
                       label="Enter your first name"
+                      activeOutlineColor="black"
                       mode="outlined"
+                      value={form.firstname}
                       onChangeText={(text) =>
                         setForm((prev) => ({ ...prev, firstname: text }))
                       }
                     />
-                    <Text className="text-red-500 mb-3">
-                      {errors.firstname}
-                    </Text>
+                    {errors.firstname ? (
+                      <Text style={styles.errorText}>{errors.firstname}</Text>
+                    ) : null}
                   </View>
-                  <View className="flex flex-col">
+                  <View style={styles.inputGroup}>
                     <TextInput
-                      style={styles.text}
+                      style={styles.textInput}
                       label="Enter your Last name"
+                      activeOutlineColor="black"
                       mode="outlined"
+                      value={form.lastname}
                       onChangeText={(text) =>
                         setForm((prev) => ({ ...prev, lastname: text }))
                       }
                     />
-                    <Text className="text-red-500 mb-3">{errors.lastname}</Text>
+                    {errors.lastname ? (
+                      <Text style={styles.errorText}>{errors.lastname}</Text>
+                    ) : null}
                   </View>
-                  <View className="flex flex-col">
+                  <View style={styles.inputGroup}>
                     <TextInput
-                      style={styles.text}
+                      style={styles.textInput}
                       autoCapitalize="none"
                       label="Email"
+                      activeOutlineColor="black"
                       placeholder="@examplegmail.com"
                       keyboardType="email-address"
                       mode="outlined"
+                      value={form.email}
                       onChangeText={(text) =>
                         setForm((prev) => ({ ...prev, email: text }))
                       }
                     />
-                    <Text className="text-red-500 mb-3">{errors.email}</Text>
+                    {errors.email ? (
+                      <Text style={styles.errorText}>{errors.email}</Text>
+                    ) : null}
                   </View>
-                  <View className="flex flex-col">
+                  <View style={styles.inputGroup}>
                     <TextInput
-                      style={styles.text}
+                      style={styles.textInput}
                       label="Enter password"
+                      activeOutlineColor="black"
                       mode="outlined"
                       autoCapitalize="none"
                       secureTextEntry
                       placeholder="password"
+                      value={form.password}
                       onChangeText={(text) =>
                         setForm((prev) => ({ ...prev, password: text }))
                       }
                     />
-                    <Text className="text-red-500 mb-3">{errors.password}</Text>
+                    {errors.password ? (
+                      <Text style={styles.errorText}>{errors.password}</Text>
+                    ) : null}
                   </View>
-                </View>
-                <Button
-                  disabled={isLoading}
-                  loading={isLoading}
-                  mode="contained"
-                  buttonColor={isLoading ? "gray" : "green"}
-                  onPress={handleRegister}
-                >
-                  {isLoading ? "Sigining in..." : "Sign Up"}
-                </Button>
-                <View className="flex-col justify-center items-center">
-                  <View className="flex-row justify-center items-center">
-                    <Text className="text-white">Already have an account?</Text>
+
+                  <Button
+                    mode="contained"
+                    style={styles.button}
+                    onPress={handleRegister}
+                  >
+                    Sign Up
+                  </Button>
+
+                  <View style={styles.switchContainer}>
+                    <Text style={styles.switchText}>
+                      Already have an account?
+                    </Text>
                     <Button
                       textColor="red"
                       onPress={() => setHasAccount(false)}
@@ -275,87 +261,81 @@ const Form = () => {
                       Sign In
                     </Button>
                   </View>
-                  <View>
-                    {formError && (
-                      <Text className="text-red-500 text-center mt-4">
-                        {formError}
-                      </Text>
-                    )}
-                    {error && (
-                      <Text className="text-red-500 text-center mt-4">
-                        {error}
-                      </Text>
-                    )}
-                  </View>
+
+                  {(formError || error) && (
+                    <Text style={styles.formErrorText}>
+                      {formError || error}
+                    </Text>
+                  )}
                 </View>
-              </View>
-            ) : (
-              <View className="">
-                <View className="mb-6">
-                  <Text className="text-white text-4xl text-center">
-                    Sign In
-                  </Text>
-                  <View className="flex flex-col">
+              ) : (
+                <View style={styles.formContainer}>
+                  <Text style={styles.title}>Sign In</Text>
+                  <View style={styles.inputGroup}>
                     <TextInput
-                      style={styles.text}
-                      activeOutlineColor="green"
+                      style={styles.textInput}
+                      activeOutlineColor="black"
                       autoCapitalize="none"
                       label="Email"
                       placeholder="@examplegmail.com"
                       keyboardType="email-address"
                       mode="outlined"
+                      value={form.email}
                       onChangeText={(text) =>
                         setForm((prev) => ({ ...prev, email: text }))
                       }
                     />
-                    <Text className="text-red-500 mb-3">
-                      {LoginError.email}
-                    </Text>
+                    {loginErrors.email ? (
+                      <Text style={styles.errorText}>{loginErrors.email}</Text>
+                    ) : null}
                   </View>
-                  <View className="flex flex-col">
+                  <View style={styles.inputGroup}>
                     <TextInput
-                      style={styles.text}
-                      activeOutlineColor="green"
+                      style={styles.textInput}
+                      activeOutlineColor="black"
                       label="Enter password"
                       autoCapitalize="none"
                       secureTextEntry
                       placeholder="password"
                       mode="outlined"
+                      value={form.password}
                       onChangeText={(text) =>
                         setForm((prev) => ({ ...prev, password: text }))
                       }
                     />
-                    <Text className="text-red-500 mb-3">
-                      {LoginError.password}
-                    </Text>
+                    {loginErrors.password ? (
+                      <Text style={styles.errorText}>
+                        {loginErrors.password}
+                      </Text>
+                    ) : null}
                   </View>
-                </View>
-                <Button
-                  mode="contained"
-                  disabled={isLoading}
-                  loading={isLoading}
-                  onPress={handleLogin}
-                >
-                  {isLoading ? "Signing in..." : "Sign in"}
-                </Button>
-                <View className="flex-column justify-center items-center">
-                  <View className="flex-row justify-center items-center">
-                    <Text className="text-white">Dont have an account?</Text>
+
+                  <Button
+                    mode="contained"
+                    style={styles.button}
+                    onPress={handleLogin}
+                  >
+                    Sign in
+                  </Button>
+
+                  <View style={styles.switchContainer}>
+                    <Text style={styles.switchText}>
+                      Don't have an account?
+                    </Text>
                     <Button textColor="red" onPress={() => setHasAccount(true)}>
                       Sign Up
                     </Button>
                   </View>
-                  <View className="mt-5">
-                    {error && (
-                      <Text className="text-red-500 text-center mt-4">
-                        {error}
-                      </Text>
-                    )}
-                  </View>
+
+                  {(formError || error) && (
+                    <Text style={styles.formErrorText}>
+                      {formError || error}
+                    </Text>
+                  )}
                 </View>
-              </View>
-            )}
-          </View>
+              )}
+            </View>
+          </ScrollView>
         </ImageBackground>
       </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
@@ -363,8 +343,62 @@ const Form = () => {
 };
 
 const styles = StyleSheet.create({
-  text: {
-    marginBottom: 7,
+  backgroundImage: {
+    flex: 1,
+  },
+  scrollContainer: {
+    flexGrow: 1,
+    justifyContent: "center",
+  },
+  container: {
+    flex: 1,
+    padding: 24,
+    justifyContent: "center",
+  },
+  formContainer: {
+    backgroundColor: "rgba(0, 0, 0, 0.6)",
+    padding: 20,
+    borderRadius: 10,
+  },
+  loader: {
+    alignSelf: "center",
+    marginVertical: 20,
+  },
+  title: {
+    color: "white",
+    fontSize: 24,
+    textAlign: "center",
+    marginBottom: 20,
+  },
+  inputGroup: {
+    marginBottom: 10,
+  },
+  textInput: {
+    backgroundColor: "white",
+  },
+  errorText: {
+    color: "red",
+    fontSize: 12,
+    marginTop: 4,
+  },
+  button: {
+    marginTop: 10,
+    marginBottom: 15,
+    backgroundColor: "green",
+  },
+  switchContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  switchText: {
+    color: "white",
+  },
+  formErrorText: {
+    color: "red",
+    textAlign: "center",
+    marginTop: 10,
   },
 });
 
