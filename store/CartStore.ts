@@ -3,7 +3,7 @@ import { ImageSourcePropType } from "react-native";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
-interface Product {
+export interface Product {
   id: string | number;
   name: string;
   price: number;
