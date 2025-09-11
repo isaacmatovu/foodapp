@@ -1,13 +1,13 @@
 import React from "react";
 import { View } from "react-native";
-import Setting from "../components/home/settings";
+import Settings from "../components/common/settings";
 
-const Settings = () => {
+const MenuItems = () => {
   return (
     <View>
-      <Setting />
+      <Settings />
     </View>
   );
 };
 
-export default Settings;
+export default MenuItems;
