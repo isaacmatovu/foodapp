@@ -16,9 +16,11 @@ interface AuthState {
   register: (email: string, password: string, name: string) => Promise<void>;
   logOut: () => Promise<void>;
   checkSession: () => Promise<void>;
+  setError: (error: string | null) => void;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
+  setError: (error) => set({ error }),
   //initial state values
   isLoggedIn: false,
   user: null,
@@ -41,7 +43,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       });
     } catch (error) {
       if (error instanceof Error)
-        set({ error: error.message, isLoading: false }); //show error
+        set({ error: (error.message = "login"), isLoading: false }); //show error
     }
   },
 
@@ -70,7 +72,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     } catch (error) {
       if (error instanceof Error)
         set({
-          error: error.message,
+          error: (error.message = "register"),
           isLoading: false,
         });
     }
@@ -98,7 +100,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       if (error instanceof Error)
         set({
           isLoading: false,
-          error: (error.message = "login or register"),
+          error: (error.message = "login and register"),
         });
     }
   },
