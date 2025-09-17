@@ -31,6 +31,7 @@ const Admin = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const { user } = useAuthStore();
+  const [dater, setDate] = useState<Date>();
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -81,6 +82,19 @@ const Admin = () => {
                       <Text className="text-white">Table:</Text>
                       <Text className="text-white">Date:</Text>
                       <Text className="text-white">Total amount:</Text>
+
+                      <View className="bg-black  h-16">
+                        {new Date().toDateString() ===
+                        new Date(order.createdAt).toDateString() ? (
+                          <Text className="text-white text-xl">
+                            Current Order
+                          </Text>
+                        ) : (
+                          <Text className="text-white text-xl">
+                            Order Finished
+                          </Text>
+                        )}
+                      </View>
                     </View>
                     <View>
                       <Text className="text-white">{order.Username}</Text>
