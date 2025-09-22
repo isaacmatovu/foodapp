@@ -95,7 +95,7 @@ const Form = () => {
     }
     setLoginErrors(newErrors);
   };
-
+  // validate form data function
   const validate = () => {
     const newErrors = { firstname: "", lastname: "", email: "", password: "" };
 
