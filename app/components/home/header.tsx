@@ -19,7 +19,7 @@ const Header = () => {
       <View className="justify-center items-start">
         <Text className="text-white text-xl font-bold">Hello {user?.name}</Text>
         <Text className="text-white text-xl font-thin">
-          Let us explore <Text className="text-green-800">SU</Text>shi World
+          Let us explore <Text className="text-red-500">SU</Text>shi World
         </Text>
       </View>
       <View className="text-center justify-center border-2 border-white rounded-full p-3">
